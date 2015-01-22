@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/sink3/main' 
+
+# Exit cleanly from an early interrupt
+Signal.trap("INT") { exit 1 }
+
+# Split arguments by "--" if its there, we'll recombine them later
+argv = ARGV.dup
+argv_extra = []
+if idx = argv.index("--")
+  argv_extra = argv.slice(idx+1, argv.length-2)
+  argv = argv.slice(0, idx)
+end
+
+# Fast path the version of Vagrant
+if argv.include?("-v") || argv.include?("--version")
+  require_relative "../lib/sink3/version"
+  puts "Sink3 #{Vagrant::VERSION}"
+  exit 0
+end
+
+Sink3::Main.start(ARGV)
