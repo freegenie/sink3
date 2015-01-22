@@ -20,7 +20,6 @@ module Sink3
 
     def start
       raise "Path does not exist" unless @path.exist? 
-
       if @path.directory? 
         @path.opendir.each do |file| 
           next if file.start_with? '.'
@@ -48,8 +47,11 @@ module Sink3
     def send_to_remote
       remote_path = "#{ENV['HOSTNAME'].strip}/#{formatted_date}/#{prefix_and_path}"
       remote_file = bucket.objects[remote_path]
-      puts "Writing #{@path} to #{remote_path} to S3"
       remote_file.write(@path)
+
+      if Sink3.config.delete_after_upload? 
+        FileUtils.rm @path
+      end
     end
 
     def formatted_date

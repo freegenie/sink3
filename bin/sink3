@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/sink3/main' 
+lib = File.expand_path('../../lib',  __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require 'sink3'
 
 # Exit cleanly from an early interrupt
 Signal.trap("INT") { exit 1 }
@@ -15,8 +18,7 @@ end
 
 # Fast path the version of Vagrant
 if argv.include?("-v") || argv.include?("--version")
-  require_relative "../lib/sink3/version"
-  puts "Sink3 #{Vagrant::VERSION}"
+  puts "Sink3 #{Sink3::VERSION}"
   exit 0
 end
 
