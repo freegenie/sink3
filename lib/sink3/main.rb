@@ -10,21 +10,24 @@ require 'sink3/path_crawler'
 module Sink3 
   class Main < Thor
     option :delete, type: :boolean
-
+    #
     # option :path, :required => true
     desc "Send file to S3", "Send files to S3 in write only mode"
 
-    def send(path) 
+    def send(*paths) 
       configure
-      path = Pathname.new(path)
-      raise "specified path does not exist" unless path.exist?
-
       # overwrite hostname if configured
       Dotenv.overload('~/.sink3cfg')
+
       validate_env
 
-      prefix = path.realdirpath.basename
-      Sink3::PathCrawler.new(path, prefix).start
+      [paths].flatten.each do |path|
+        path = Pathname.new(path)
+        raise "specified path does not exist" unless path.exist?
+        prefix = path.realdirpath.basename
+
+        Sink3::PathCrawler.new(path, prefix).start
+      end
     end
 
     private 

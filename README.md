@@ -1,8 +1,6 @@
 # Sink3
 
 TODO: Write a gem description
-TODO: allow more files to be sent via the command line: `sink3 send a.txt
-b.txt`
 
 ## Installation
 
