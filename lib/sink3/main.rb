@@ -1,6 +1,6 @@
 require 'thor' 
 require 'dotenv' 
-require 'aws-sdk' 
+require 'aws-sdk-v1' 
 
 lib = File.expand_path('../..', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
