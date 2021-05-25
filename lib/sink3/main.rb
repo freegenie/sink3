@@ -9,10 +9,13 @@ require 'sink3/path_crawler'
 
 module Sink3 
   class Main < Thor
-    option :delete, type: :boolean
     #
     # option :path, :required => true
     desc "send", "Send files to S3 in write only mode"
+
+    option :delete, type: :boolean, desc: "delete origin file on succesful send"
+    option :skip_overwrite, type: :boolean, desc: "skip sending file if exists" 
+    option :verbose, type: :boolean, desc: "verbose" 
 
     def send(*paths) 
       configure
@@ -37,6 +40,8 @@ module Sink3
 
       Sink3.configure do |config| 
         config.delete_after_upload = options[:delete]
+        config.skip_overwrite = options[:skip_overwrite]
+        config.verbose = options[:verbose]
       end
     end
 

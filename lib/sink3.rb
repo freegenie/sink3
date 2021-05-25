@@ -15,6 +15,8 @@ module Sink3
 
   class Configuration 
     attr_accessor :delete_after_upload
+    attr_accessor :skip_overwrite
+    attr_accessor :verbose
 
     def delete_after_upload
       !!@delete_after_upload

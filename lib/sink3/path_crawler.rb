@@ -44,10 +44,27 @@ module Sink3
       s3.buckets[ENV['BUCKET']]
     end
 
+    def check_exists remote_file
+      remote_file.exists?
+    rescue AWS::S3::Errors::Forbidden
+      # expect this error to be returned when file exists 
+      # and we don't have access to read the file
+      true 
+    end
+
     def send_to_remote
       remote_path = "#{ENV['HOSTNAME'].strip}/#{formatted_date}#{prefix_and_path}"
       remote_file = bucket.objects[remote_path]
-      remote_file.write(@path)
+      if Sink3.config.skip_overwrite 
+	if ! check_exists(remote_file)
+	  puts "remote file does not exist"  if Sink3.config.verbose
+	  remote_file.write(@path)
+	else
+          puts "skpping overwrite of #{remote_path}"  if Sink3.config.verbose
+        end
+      else
+        remote_file.write(@path)
+      end
 
       if Sink3.config.delete_after_upload? 
         FileUtils.rm @path
