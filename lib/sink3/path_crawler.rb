@@ -57,7 +57,7 @@ module Sink3
       remote_file = bucket.objects[remote_path]
       if Sink3.config.skip_overwrite 
 	if ! check_exists(remote_file)
-	  puts "remote file does not exist"  if Sink3.config.verbose
+	  puts "remote file does not exist #{remote_path}"  if Sink3.config.verbose
 	  remote_file.write(@path)
 	else
           puts "skpping overwrite of #{remote_path}"  if Sink3.config.verbose
@@ -72,7 +72,7 @@ module Sink3
     end
 
     def formatted_date
-      if !ENV['SKIP_DATE_PARTITION']
+      if !Sink3.config.skip_date_partition
         return "#{Time.now.strftime "%Y-%m-%d"}/"
       else
         return ""

@@ -16,6 +16,8 @@ module Sink3
     option :delete, type: :boolean, desc: "delete origin file on succesful send"
     option :skip_overwrite, type: :boolean, desc: "skip sending file if exists" 
     option :verbose, type: :boolean, desc: "verbose" 
+    option :skip_date_partition, type: :boolean, desc: "remove YYYY-MM-DD remote prefix" 
+    option :skip_full_path, type: :boolean, desc: "don't archive file with full path prefix" 
 
     def send(*paths) 
       configure
@@ -24,10 +26,20 @@ module Sink3
 
       validate_env
 
+      prefix = nil 
       [paths].flatten.each do |path|
         path = Pathname.new(path)
+	
         raise "specified path does not exist" unless path.exist?
-        prefix = path.realdirpath.basename
+        unless Sink3.config.skip_full_path
+           if (path.file?) 
+             prefix = path.realdirpath.parent 
+             puts "prefix is #{prefix}" if Sink3.config.verbose
+           else 
+             prefix = path.realdirpath.parent.parent 
+             puts "prefix is not set" if Sink3.config.verbose
+           end
+       end
 
         Sink3::PathCrawler.new(path, prefix).start
       end
@@ -42,6 +54,8 @@ module Sink3
         config.delete_after_upload = options[:delete]
         config.skip_overwrite = options[:skip_overwrite]
         config.verbose = options[:verbose]
+        config.skip_date_partition = options[:skip_date_partition]
+        config.skip_full_path = options[:skip_full_path]
       end
     end
 
