@@ -45,7 +45,7 @@ module Sink3
     end
 
     def send_to_remote
-      remote_path = "#{ENV['HOSTNAME'].strip}/#{formatted_date}/#{prefix_and_path}"
+      remote_path = "#{ENV['HOSTNAME'].strip}/#{formatted_date}#{prefix_and_path}"
       remote_file = bucket.objects[remote_path]
       remote_file.write(@path)
 
@@ -55,7 +55,11 @@ module Sink3
     end
 
     def formatted_date
-      Time.now.strftime "%Y-%m-%d"
+      if !ENV['SKIP_DATE_PARTITION']
+        return "#{Time.now.strftime "%Y-%m-%d"}/"
+      else
+        return ""
+      end
     end
 
     def prefix_and_path

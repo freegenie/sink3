@@ -12,7 +12,7 @@ module Sink3
     option :delete, type: :boolean
     #
     # option :path, :required => true
-    desc "Send file to S3", "Send files to S3 in write only mode"
+    desc "send", "Send files to S3 in write only mode"
 
     def send(*paths) 
       configure
