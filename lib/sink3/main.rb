@@ -29,18 +29,14 @@ module Sink3
       prefix = nil 
       [paths].flatten.each do |path|
         path = Pathname.new(path)
-	
         raise "specified path does not exist" unless path.exist?
-        unless Sink3.config.skip_full_path
-           if (path.file?) 
-             prefix = path.realdirpath.parent 
-             puts "prefix is #{prefix}" if Sink3.config.verbose
-           else 
-             prefix = path.realdirpath.parent.parent 
-             puts "prefix is not set" if Sink3.config.verbose
-           end
-       end
-
+	
+	if path.relative? || Sink3.config.skip_full_path
+          prefix = nil 
+	else 
+          path = path.realdirpath
+	end
+        puts "prefix is #{prefix}" if Sink3.config.verbose
         Sink3::PathCrawler.new(path, prefix).start
       end
     end
