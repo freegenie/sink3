@@ -36,7 +36,6 @@ module Sink3
 	else 
           path = path.realdirpath
 	end
-        puts "prefix is #{prefix}" if Sink3.config.verbose
         Sink3::PathCrawler.new(path, prefix).start
       end
     end
